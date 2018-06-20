@@ -31,14 +31,6 @@ END_LEGAL */
 //xed_encode_nonterminal_ISA_ENCODE(xed_encoder_request_t& xes);
 
 
-const xed_operand_values_t*
-xed_encoder_request_operands_const(const xed_encoder_request_t* p) {
-    return p;
-}
-xed_operand_values_t*
-xed_encoder_request_operands(xed_encoder_request_t* p) {
-    return p;
-}
 
 // Emitting the legacy map bytes.
 // Need to convert from xed_ild_map_enum_t to the actual bytes.
@@ -240,15 +232,22 @@ xed_encoder_request__memop_compatible(const xed_encoder_request_t* p,
     return 0;
 }
 
+static XED_INLINE void zero_inst_enc(xed_encoder_request_t* p)
+{
+    unsigned int i;
+    xed_uint32_t* xp = (xed_uint32_t*)p;
+    for(i=0;i<sizeof(xed_encoder_request_t)/4;i++)
+        xp[i]=0;
+}
 
 void xed_encoder_request_zero_set_mode(xed_encoder_request_t* p,
                                         const xed_state_t* dstate) {
-    memset(p, 0, sizeof(xed_encoder_request_t));
+    zero_inst_enc(p);
     xed_operand_values_set_mode(p,dstate);
 }
 
 void xed_encoder_request_zero(xed_encoder_request_t* p)    {
-    memset(p, 0, sizeof(xed_encoder_request_t));
+    zero_inst_enc(p);
 }
 
 xed_iclass_enum_t
